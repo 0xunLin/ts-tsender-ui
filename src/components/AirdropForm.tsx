@@ -1,7 +1,7 @@
 "use client"
 
 import InputField from "./InputField"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { chainsToTSender, tsenderAbi, erc20Abi } from "@/constants"
 import { useChainId, useConfig, useAccount } from "wagmi"
 import { readContract } from "@wagmi/core"
@@ -13,6 +13,7 @@ export default function AirdropForm() {
     const chainId = useChainId()
     const config = useConfig()
     const accouunt = useAccount()
+    const total: number = useMemo( () => calculateTotal(amounts), [amounts]) // this says whenever the amounts variable changes, call the function calculateTotal
 
     async function getApprovedAmount(tSenderAddress: string | null): Promise<number> {
         if (!tSenderAddress) {
@@ -38,6 +39,8 @@ export default function AirdropForm() {
         const tSenderAddress = chainsToTSender[chainId]["tsender"]
         const approvedAmount = await getApprovedAmount(tSenderAddress)
         console.log(approvedAmount)
+
+        // if (result < )
     }
 
     return (
