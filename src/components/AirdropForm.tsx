@@ -3,8 +3,10 @@
 import InputField from "./InputField"
 import { useState, useMemo } from "react"
 import { chainsToTSender, tsenderAbi, erc20Abi } from "@/constants"
-import { useChainId, useConfig, useAccount } from "wagmi"
-import { readContract } from "@wagmi/core"
+import { useChainId, useConfig, useAccount, useWriteContract } from "wagmi"
+import { readContract, waitForTransactionReceipt } from "@wagmi/core"
+import { calculateTotal } from "@/utils" // used index.ts in utils to shorten the import(location)
+import { write } from "fs"
 
 export default function AirdropForm() {
     const [tokenAddress, setTokenAddress] = useState("")
@@ -13,7 +15,8 @@ export default function AirdropForm() {
     const chainId = useChainId()
     const config = useConfig()
     const accouunt = useAccount()
-    const total: number = useMemo( () => calculateTotal(amounts), [amounts]) // this says whenever the amounts variable changes, call the function calculateTotal
+    const total: number = useMemo(() => calculateTotal(amounts), [amounts]) // this says whenever the amounts variable changes, call the function calculateTotal
+    const { data: hash, isPending, writeContractAsync } = useWriteContract()
 
     async function getApprovedAmount(tSenderAddress: string | null): Promise<number> {
         if (!tSenderAddress) {
@@ -38,9 +41,20 @@ export default function AirdropForm() {
         // 3. Wait for the transaction to be mined
         const tSenderAddress = chainsToTSender[chainId]["tsender"]
         const approvedAmount = await getApprovedAmount(tSenderAddress)
-        console.log(approvedAmount)
 
-        // if (result < )
+        if (approvedAmount < total) {
+            const approvalHash = await writeContractAsync({
+                abi: erc20Abi,
+                address: tokenAddress as `0x${string}`,
+                functionName: "approve",
+                args: [tSenderAddress as `0x${string}`, BigInt(total)],
+            })
+            const approvalReceipt = await waitForTransactionReceipt(config, {
+                hash: approvalHash
+            })
+            console.log("Approval receipt:", approvalReceipt)
+        }
+
     }
 
     return (

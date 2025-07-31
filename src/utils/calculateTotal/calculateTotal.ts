@@ -1,4 +1,4 @@
-function calculateTotal(amounts: string): number {
+export function calculateTotal(amounts: string): number {
     // Split the amounts by either newlines or comas, then clean up the results
     const amountArray = amounts
         .split(/[\n,]+/)

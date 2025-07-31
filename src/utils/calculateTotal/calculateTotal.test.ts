@@ -10,12 +10,17 @@ describe("calculateTotal", () => {
         expect(calculateTotal("100, 200, 300")).toBe(600)
     })
 
+    it("handles decimals correctly", () => {
+        expect(calculateTotal("1.5, 2.5, 3")).toBe(7)
+    })
+
     it("handles empty string", () => {
         expect(calculateTotal("")).toBe(0)
     })
 
     it("handles invalid inputs", () => {
-        expect(calculateTotal("abc,100,def")).toBe(0)
+        expect(calculateTotal("abc,100,def")).toBe(100);
+        expect(calculateTotal("3\ntwo,3")).toBe(6)
     })
 
     it("handles trailing comma", () => {
