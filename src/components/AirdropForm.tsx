@@ -42,6 +42,7 @@ export default function AirdropForm() {
         const tSenderAddress = chainsToTSender[chainId]["tsender"]
         const approvedAmount = await getApprovedAmount(tSenderAddress)
 
+        // 1b. and 2.
         if (approvedAmount < total) {
             const approvalHash = await writeContractAsync({
                 abi: erc20Abi,
@@ -53,6 +54,32 @@ export default function AirdropForm() {
                 hash: approvalHash
             })
             console.log("Approval receipt:", approvalReceipt)
+
+            await writeContractAsync({
+                abi: tsenderAbi,
+                address: tSenderAddress as `0x${string}`,
+                functionName: "airdropERC20",
+                args: [
+                    tokenAddress,
+                    // comma or newline seperated
+                    recipients.split(/[,\n]+/).map(addr => addr.trim()).filter(addr => addr !== ""),
+                    amounts.split(/[,\n]+/).map(amt => amt.trim()).filter(amt => amt !== ""),
+                    BigInt(total),
+                ],
+            })
+        } else { // 1b. and 2.
+            await writeContractAsync({
+                abi: tsenderAbi,
+                address: tSenderAddress as `0x${string}`,
+                functionName: "airdropERC20",
+                args: [
+                    tokenAddress,
+                    // comma or newline seperated
+                    recipients.split(/[,\n]+/).map(addr => addr.trim()).filter(addr => addr !== ""),
+                    amounts.split(/[,\n]+/).map(amt => amt.trim()).filter(amt => amt !== ""),
+                    BigInt(total),
+                ],
+            })
         }
 
     }
