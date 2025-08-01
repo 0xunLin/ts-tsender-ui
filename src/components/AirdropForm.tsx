@@ -63,11 +63,11 @@ export default function AirdropForm() {
                     tokenAddress,
                     // comma or newline seperated
                     recipients.split(/[,\n]+/).map(addr => addr.trim()).filter(addr => addr !== ""),
-                    amounts.split(/[,\n]+/).map(amt => amt.trim()).filter(amt => amt !== ""),
+                    amounts.split(/[,\n]+/).map(amount => amount.trim()).filter(amount => amount !== ""),
                     BigInt(total),
                 ],
             })
-        } else { // 1b. and 2.
+        } else { // 1a. and 2.
             await writeContractAsync({
                 abi: tsenderAbi,
                 address: tSenderAddress as `0x${string}`,
@@ -76,7 +76,7 @@ export default function AirdropForm() {
                     tokenAddress,
                     // comma or newline seperated
                     recipients.split(/[,\n]+/).map(addr => addr.trim()).filter(addr => addr !== ""),
-                    amounts.split(/[,\n]+/).map(amt => amt.trim()).filter(amt => amt !== ""),
+                    amounts.split(/[,\n]+/).map(amount => amount.trim()).filter(amount => amount !== ""),
                     BigInt(total),
                 ],
             })
