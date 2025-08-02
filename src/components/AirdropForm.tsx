@@ -8,6 +8,7 @@ import { readContract, waitForTransactionReceipt } from "@wagmi/core"
 import { calculateTotal } from "@/utils" // used index.ts in utils to shorten the import(location)
 import { write } from "fs"
 import { AiOutlineLoading3Quarters } from "react-icons/ai" // Spinner icon from react-icons
+import { formatEther } from "viem"
 
 export default function AirdropForm() {
     // Read from localStorage on initial load
@@ -18,9 +19,10 @@ export default function AirdropForm() {
 
     const chainId = useChainId()
     const config = useConfig()
-    const accouunt = useAccount()
+    const account = useAccount()
 
     const total: number = useMemo(() => calculateTotal(amounts), [amounts]) // this says whenever the amounts variable changes, call the function calculateTotal
+    const formattedEth: string = useMemo(() => formatEther(BigInt(total || 0)), [total])
     const { data: hash, isPending, writeContractAsync } = useWriteContract()
 
     // Load initial values from localStorage on client side
@@ -60,7 +62,7 @@ export default function AirdropForm() {
             abi: erc20Abi,
             address: tokenAddress as `0x${string}`,
             functionName: "allowance",
-            args: [accouunt.address, tSenderAddress as `0x${string}`],
+            args: [account.address, tSenderAddress as `0x${string}`],
         }) // solidity equivalent of `token.allowance(account, tSenderAddress)`
 
         return response as number
@@ -129,7 +131,10 @@ export default function AirdropForm() {
                     BigInt(total),
                 ],
             })
+
         }
+
+        setLoading(false)
 
     }
 
@@ -155,6 +160,12 @@ export default function AirdropForm() {
                 onChange={e => setAmounts(e.target.value)}
                 large={true}
             />
+            {/* Transaction Info */}
+            <div className="bg-gray-100 text-gray-800 p-4 mb-4 rounded-md shadow">
+                <p><strong>Token Address:</strong> {tokenAddress || "N/A"}</p>
+                <p><strong>Total Amount (Wei):</strong> {total.toString()}</p>
+                <p><strong>Total Amount (ETH):</strong> {formattedEth}</p>
+            </div>
             <button
                 onClick={handleSubmit}
                 disabled={loading}
