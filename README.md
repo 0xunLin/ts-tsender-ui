@@ -10,4 +10,5 @@ function airdropERC20(
     uint256 totalAmount
 )
 ```
-5. Deploy to fleek
+5. e2e testing
+6. Deploy to fleek
