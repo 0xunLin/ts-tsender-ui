@@ -33,8 +33,8 @@ test("should show the airdrop form when connected, otherwise, not", async ({ pag
 
   const customNetwork = {
     name: 'Anvil',
-    rpcUrl: ['http://12:8545'],
-    chainId: '31337',
+    rpcUrl: 'http://127.0.0.1:8545',
+    chainId: 31337,
     symbol: 'ETH'
   }
   await metamask.addNetwork(customNetwork)
