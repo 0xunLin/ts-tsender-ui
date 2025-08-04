@@ -6,7 +6,6 @@ import { chainsToTSender, tsenderAbi, erc20Abi } from "@/constants"
 import { useChainId, useConfig, useAccount, useWriteContract } from "wagmi"
 import { readContract, waitForTransactionReceipt } from "@wagmi/core"
 import { calculateTotal } from "@/utils" // used index.ts in utils to shorten the import(location)
-import { write } from "fs"
 import { AiOutlineLoading3Quarters } from "react-icons/ai" // Spinner icon from react-icons
 import { formatEther } from "viem"
 
